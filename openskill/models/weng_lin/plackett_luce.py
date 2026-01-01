@@ -268,6 +268,7 @@ class PlackettLuce:
         margin: float = 0.0,
         limit_sigma: bool = False,
         balance: bool = False,
+        normalize_weights: bool = True,
     ):
         r"""
         :param mu: Represents the initial belief about the skill of
@@ -314,6 +315,9 @@ class PlackettLuce:
 
         :param balance: Boolean that determines whether to emphasize
                         rating outliers.
+        
+        :param normalize_weights: Boolean flag that determines if weights
+                        should be normalized.
         """
         # Model Parameters
         self.mu: float = float(mu)
@@ -337,6 +341,7 @@ class PlackettLuce:
         self.margin: float = float(margin)
         self.limit_sigma: bool = limit_sigma
         self.balance: bool = balance
+        self.normalize_weights = normalize_weights
 
         # Model Data Container
         self.PlackettLuceRating: type[PlackettLuceRating] = PlackettLuceRating
@@ -591,7 +596,7 @@ class PlackettLuce:
             ranks = self._calculate_rankings(teams, ranks)
 
         # Normalize Weights
-        if weights:
+        if weights and self.normalize_weights:
             weights = [_normalize(team_weights, 1, 2) for team_weights in weights]
 
         tenet = None
